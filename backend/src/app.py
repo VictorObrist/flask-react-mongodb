@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['MONGO_URI'] = 'mongodb://localhost/flaskreactdb'
+app.config['CORS_HEADERS'] = 'Content-Type'
 mongo = PyMongo(app)
 
 CORS(app)
@@ -12,12 +13,12 @@ db = mongo.db.users
 
 @app.route('/users', methods=['POST'])
 def createUser():
-    # print(request.json)
-    id = db.insert({
+    print(request.data)
+    id = db.insert_one({
         "name": request.json['name'],
         "email": request.json['email'],
         "password": request.json['password']
-    })
+    }).inserted_id
     return jsonify(str(ObjectId(id)))
 
 @app.route('/users', methods=['GET'])
